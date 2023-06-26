@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>จินตคณิต with the Best</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
+      body {
+        background: rgb(238, 174, 202);
+        background: radial-gradient(
+          circle,
+          rgba(238, 174, 202, 1) 0%,
+          rgba(148, 187, 233, 1) 100%
+        );
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: "Itim", cursive;
+        /* -webkit-text-stroke: 2px white; */
+        font-size: 250px;
+        font-weight: 900;
+        color: black;
+      }
+
+      #randomNumber {
+        margin-bottom: 20px;
+      }
+
+      button {
+        background-color: #fbeee0;
+        border: 2px solid #422800;
+        border-radius: 30px;
+        box-shadow: #422800 4px 4px 0 0;
+        color: #422800;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 18px;
+        padding: 0 18px;
+        line-height: 50px;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        padding: 10px 20px;
+        font-size: 24px;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+      button:hover {
+        background-color: #fff;
+      }
+
+      button:active {
+        box-shadow: #422800 2px 2px 0 0;
+        transform: translate(2px, 2px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <span id="randomNumber"></span>
+      <button onclick="generateNewSet()">สุ่มเลขชุดใหม่</button>
+      <button onclick="showSum()">แสดงผลลัพธ์</button>
+      <button onclick="clearNumbers()">Clear เลขชุดปัจจุบัน</button>
+    </div>
+    <audio id="tick">
+      <source src="Audio/bell.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script>
+      var bottomNumber = prompt("ต้องการตัวเลขจาก");
+      var topNumber = prompt("ถึง....");
+      var allnumber = Math.abs(bottomNumber) + Math.abs(topNumber) + 1;
+      var waitTime = prompt("ต้องการรอระหว่างข้อกี่วินาที");
+      var aumoutOfNumbers = prompt("ต้องการเลขกี่ตัว");
+      var randomNumbers = []; // Array to store random numbers
+      var currentIndex = 0; // Current index to keep track of displayed numbers
+      var intervalId; // Interval ID for displaying numbers with a delay
+      var ticktockAudio = document.getElementById("tick");
+
+      function playTickTock() {
+        ticktockAudio.play();
+      }
+
+      function generateRandomNumber() {
+        return Math.floor(Math.random() * allnumber) - Math.abs(bottomNumber); // Generates a random number between -9 and 9
+      }
+
+      function generateNewSet() {
+        randomNumbers = []; // Clear the array
+        currentIndex = 0; // Reset the current index
+
+        while (randomNumbers.length < aumoutOfNumbers) {
+          var num = generateRandomNumber();
+
+          // Check if the sum of the current array plus the new number exceeds 100 or if the sum becomes negative
+          if (
+            getSum(randomNumbers) + num <= 100 &&
+            getSum(randomNumbers) + num > 0 &&
+            randomNumbers[randomNumbers.length - 1] !== num
+          ) {
+            randomNumbers.push(num); // Add the number to the array
+          }
+        }
+
+        displayNumbersWithDelay(); // Display the numbers one at a time with a delay
+      }
+
+      function getSum(arr) {
+        return arr.reduce(function (acc, curr) {
+          return acc + curr;
+        }, 0);
+      }
+
+      function displayNumbersWithDelay() {
+        clearInterval(intervalId); // Clear any existing interval
+
+        intervalId = setInterval(function () {
+          if (currentIndex < randomNumbers.length) {
+            document.getElementById("randomNumber").innerText =
+              randomNumbers[currentIndex];
+
+            currentIndex++;
+            playTickTock();
+          } else {
+            clearInterval(intervalId); // Clear the interval when all numbers have been displayed
+          }
+        }, waitTime * 1000); // Delay of 1 second (1000 milliseconds)
+      }
+
+      function showSum() {
+        var sum = getSum(randomNumbers);
+
+        alert("ผลลัพธ์ = " + sum);
+      }
+
+      function clearNumbers() {
+        randomNumbers = []; // Clear the array
+        currentIndex = 0; // Reset the current index
+        clearInterval(intervalId); // Clear any existing interval
+        document.getElementById("randomNumber").innerText = "";
+      }
+
+      generateNewSet(); // Call the function initially to generate a new set of numbers
+    </script>
+  </body>
+</html>
